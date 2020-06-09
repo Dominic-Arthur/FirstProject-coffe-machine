@@ -177,6 +177,3 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
                 self.__back()
             elif action == "exit":
                 self.__switch_off_on()
-
-
-testing = CoffeeMachine(water=400, milk=540, coffee_beans=120, cups=9)
