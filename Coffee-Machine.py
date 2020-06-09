@@ -124,7 +124,6 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
             self.water += CoffeeMachine.coffee_options["cappuccino(3)"]["water"]
             self.milk += CoffeeMachine.coffee_options["cappuccino(3)"]["milk"]
             self.coffee += CoffeeMachine.coffee_options["cappuccino(3)"]["coffee"]
-            ####
 
     def __withdraw_money(self):
         """This method withdraw the money and set the attribute 'money to zero"""
@@ -132,7 +131,7 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
         self.money = 0
 
     def __buy(self):
-        """This method makes takes in the buy order"""
+        """This method allows you to issue the buy order"""
         coffee_type = input("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino: ")
         self.__update_machine_state(coffee_type)
 
@@ -151,10 +150,10 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
     def __switch_off_on(self):
         """This method turns the machine off if on and verse versa"""
         if not self.active:
-            # print("Turning machine on")
+            print("Turning machine on")
             self.active = True
         else:
-            # print("Turning machine off")
+            print("Turning machine off")
             self.active = False
 
     def select_action(self):
@@ -164,12 +163,12 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
         """
         self.__switch_off_on()
         while self.active:
-            action = input("Write action (buy, fill, take, remaining, exit, back):")
+            action = input("Write action: buy, fill, withdraw, remaining, exit, or back?):__")
             if action == "buy":
                 self.__buy()
             elif action == "fill":
                 self.__add_resources()
-            elif action == "take":
+            elif action == "withdraw":
                 self.__withdraw_money()
             elif action == "remaining":
                 self.__remaining()
@@ -177,3 +176,7 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
                 self.__back()
             elif action == "exit":
                 self.__switch_off_on()
+
+
+machine = CoffeeMachine()
+machine.select_action()
