@@ -1,7 +1,7 @@
 class CoffeeMachine:
     """A class of Coffee Machine"""
     coffee_options = {
-        "espresso(1)": {"water": 250, "coffee": 16, "price": 4},
+        "espresso(1)": {"water": 250, "milk": 0, "coffee": 16, "price": 4},
         "latte(2)": {"water": 350, "milk": 75, "coffee": 20, "price": 7},
         "cappuccino(3)": {"water": 200, "milk": 100, "coffee": 12, "price": 6}
     }
@@ -33,44 +33,37 @@ class CoffeeMachine:
 The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disposable cups\n{} of money
         """.format(self.water, self.milk, self.coffee, self.cups, self.money)
 
+    def __user_entry_into_coffee_option(self, user_entry):
+        """This method takes the user input for the buy action and return dic of ingredients"""
+        if user_entry == "1":
+            return self.coffee_options["espresso(1)"]
+        elif user_entry == "2":
+            return self.coffee_options["latte(2)"]
+        elif user_entry == "3":
+            return self.coffee_options["cappuccino(3)"]
+        else:
+            return None
+
     def __check_for_resource(self, coffee_type):
         """This method checks if the machine has enough resources to make the particular coffee type"""
         if self.cups == 0:
             print("Sorry, not enough disposable cups!")
             return False
 
-        elif coffee_type == "1":
-            if self.water < CoffeeMachine.coffee_options["espresso(1)"]["water"]:
-                print("Sorry, not enough water!")
-                return False
-            elif self.coffee < CoffeeMachine.coffee_options["espresso(1)"]["coffee"]:
-                print("Sorry, not enough coffee beans!")
-                return False
-            else:
-                return True
+        coffee_option_ingredients = self.__user_entry_into_coffee_option(coffee_type)
 
-        elif coffee_type == "2":
-            if self.water < CoffeeMachine.coffee_options["latte(2)"]["water"]:
+        if coffee_option_ingredients is None:
+            print("Unrecognised selection!")
+            return False
+        else:
+            if self.water < coffee_option_ingredients["water"]:
                 print("Sorry, not enough water!")
                 return False
-            elif self.coffee < CoffeeMachine.coffee_options["latte(2)"]["coffee"]:
+            elif self.coffee < coffee_option_ingredients["coffee"]:
                 print("Sorry, not enough coffee beans!")
                 return False
-            elif self.milk < CoffeeMachine.coffee_options["latte(2)"]["milk"]:
+            elif self.milk < coffee_option_ingredients["milk"]:
                 print("Sorry, not enough milk!")
-                return False
-            else:
-                return True
-
-        elif coffee_type == "3":
-            if self.water < CoffeeMachine.coffee_options["cappuccino(3)"]["water"]:
-                print("Sorry, not enough water!")
-                return False
-            elif self.milk < CoffeeMachine.coffee_options["cappuccino(3)"]["milk"]:
-                print("Sorry, not enough milk!")
-                return False
-            elif self.coffee < CoffeeMachine.coffee_options["cappuccino(3)"]["coffee"]:
-                print("Sorry, not enough coffee beans!")
                 return False
             else:
                 return True
@@ -81,20 +74,11 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
             print("I have enough resources, making you a coffee!")
             self.coffee_type_bought = coffee_type
             self.cups -= 1
-            if coffee_type == "1":
-                self.money += CoffeeMachine.coffee_options["espresso(1)"]["price"]
-                self.water -= CoffeeMachine.coffee_options["espresso(1)"]["water"]
-                self.coffee -= CoffeeMachine.coffee_options["espresso(1)"]["coffee"]
-            elif coffee_type == "2":
-                self.money += CoffeeMachine.coffee_options["latte(2)"]["price"]
-                self.water -= CoffeeMachine.coffee_options["latte(2)"]["water"]
-                self.coffee -= CoffeeMachine.coffee_options["latte(2)"]["coffee"]
-                self.milk -= CoffeeMachine.coffee_options["latte(2)"]["milk"]
-            elif coffee_type == "3":
-                self.money += CoffeeMachine.coffee_options["cappuccino(3)"]["price"]
-                self.water -= CoffeeMachine.coffee_options["cappuccino(3)"]["water"]
-                self.milk -= CoffeeMachine.coffee_options["cappuccino(3)"]["milk"]
-                self.coffee -= CoffeeMachine.coffee_options["cappuccino(3)"]["coffee"]
+            coffee_option_ingredients = self.__user_entry_into_coffee_option(coffee_type)
+            self.money += coffee_option_ingredients["price"]
+            self.water -= coffee_option_ingredients["water"]
+            self.milk -= coffee_option_ingredients["milk"]
+            self.coffee -= coffee_option_ingredients["coffee"]
 
     def __add_resources(self):
         """This method add resources to the machine"""
@@ -109,21 +93,16 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
 
     def __reverse_update(self, coffee_type):
         """This method allow user to cancel order"""
-        self.cups += 1
-        if coffee_type == "1":
-            self.money -= CoffeeMachine.coffee_options["espresso(1)"]["price"]
-            self.water += CoffeeMachine.coffee_options["espresso(1)"]["water"]
-            self.coffee += CoffeeMachine.coffee_options["espresso(1)"]["coffee"]
-        elif coffee_type == "2":
-            self.money -= CoffeeMachine.coffee_options["latte(2)"]["price"]
-            self.water += CoffeeMachine.coffee_options["latte(2)"]["water"]
-            self.coffee += CoffeeMachine.coffee_options["latte(2)"]["coffee"]
-            self.milk += CoffeeMachine.coffee_options["latte(2)"]["milk"]
-        elif coffee_type == "3":
-            self.money -= CoffeeMachine.coffee_options["cappuccino(3)"]["price"]
-            self.water += CoffeeMachine.coffee_options["cappuccino(3)"]["water"]
-            self.milk += CoffeeMachine.coffee_options["cappuccino(3)"]["milk"]
-            self.coffee += CoffeeMachine.coffee_options["cappuccino(3)"]["coffee"]
+        if self.coffee_type_bought is not None:
+            self.cups += 1
+            coffee_option_ingredients = self.__user_entry_into_coffee_option(coffee_type)
+            self.money -= coffee_option_ingredients["price"]
+            self.water += coffee_option_ingredients["water"]
+            self.milk += coffee_option_ingredients["milk"]
+            self.coffee += coffee_option_ingredients["coffee"]
+            self.coffee_type_bought = None
+        else:
+            print("Sorry, you have not made any purchase")
 
     def __withdraw_money(self):
         """This method withdraw the money and set the attribute 'money to zero"""
@@ -150,9 +129,11 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
     def __switch_off_on(self):
         """This method turns the machine off if on and verse versa"""
         if not self.active:
+            print()
             print("Turning machine on")
             self.active = True
         else:
+            print()
             print("Turning machine off")
             self.active = False
 
@@ -163,6 +144,7 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
         """
         self.__switch_off_on()
         while self.active:
+            print()
             action = input("Write action: buy, fill, withdraw, remaining, exit, or back?):__")
             if action == "buy":
                 self.__buy()
@@ -176,7 +158,10 @@ The coffee machine has:\n{} of water\n{} of milk\n{} of coffee beans\n{} of disp
                 self.__back()
             elif action == "exit":
                 self.__switch_off_on()
+            else:
+                print("Sorry, action not recognise!")
 
 
+# testing the code
 machine = CoffeeMachine()
 machine.select_action()
